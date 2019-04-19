@@ -66,7 +66,6 @@ class _FirstOpenState extends State<FirstOpen> {
     return IntroSlider(
       slides: this.slides,
       onDonePress: this.onDonePress,
-      onSkipPress: this.onSkipPress,
     );
   }
 }

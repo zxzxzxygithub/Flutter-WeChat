@@ -77,7 +77,7 @@ class _TalkState extends State<Talk> with SingleTickerProviderStateMixin{
 
     setState(() {
       talkWidgetList = widgetList;
-      _scrollController.animateTo( 50.0 * talkHistory.length + 100,duration: new Duration(seconds: 1), curve: Curves.ease);
+//      _scrollController.animateTo( 50.0 * talkHistory.length + 100,duration: new Duration(seconds: 1), curve: Curves.ease);
     });
   }
 
@@ -103,10 +103,10 @@ void  getImage() async {
 
     Future.delayed(new Duration(seconds: 1), (){
       var item = {
-          'name': widget.detail['name'],
-          'id': widget.detail['id'],
-          'imageUrl': widget.detail['imageUrl'],
-          'content': returnTalkList[talkHistory.length % 5],
+          'name':  'name',
+          'id': 'id',
+          'imageUrl': 'imageUrl',
+          'content': '',
           'type': 'text'
         };
        talkHistory.add(item);
@@ -191,55 +191,66 @@ void  getImage() async {
     );
   }
 
+  Widget getRecEditText(BuildContext context) =>
+      new Container(
+        width: MediaQuery.of(context).size.width-107,
+        padding: new EdgeInsets.symmetric(horizontal: 10.0),
+        child: new TextField(
+          focusNode: fsNode1,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(
+                vertical: 8.0, horizontal: 15.0),
+            hintText: '友善发言的人运气都不会差',
+//            prefixIcon: Icon(Icons.search),
+            // contentPadding: EdgeInsets.all(10),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(color: const Color(0xFFCCCCCC))),
+            filled: true,
+            fillColor: Color(0xffffffff),
+          ),
+        ),
+      );
+
+  get sendText =>
+      new Text("发送",
+          style: const TextStyle(color: const Color(0xFFF6A637), fontSize: 15));
+
+
+  get gestureDetector =>
+      new GestureDetector(
+        child: sendText,
+        onTap: () {
+        },
+      );
+
+  Widget getEditRowWidget(BuildContext context) {
+
+
+    var row = new Row(
+      children: <Widget>[
+        getRecEditText(context),
+        gestureDetector,
+      ],
+    );
+
+
+    var column = Column(children: <Widget>[
+      row
+    ],);
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.white,
+      padding: EdgeInsets.only(top: 10,bottom: 17),
+      child: column,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context){
 
-    return new WillPopScope(
-      onWillPop: (){
-        Navigator.of(context).pushNamedAndRemoveUntil('/home', (_) => false);
-      },
-      child:  new Scaffold(
-        appBar: new AppBar(
-          leading: new IconButton(
-            icon: Icon(Icons.keyboard_arrow_left),
-            onPressed: (){
-              Navigator.of(context).pushReplacementNamed('/home');
-            },
-          ),
-          title: new Text('${widget.detail['name']}', style: new TextStyle(fontSize: 20.0),),
-          actions: <Widget>[
-            new IconButton(
-              icon: Icon(Icons.person, size:30.0),
-              onPressed: (){
-                Navigator.of(context).push(
-                  new MaterialPageRoute(
-                    builder: (_) => new Detailed(detail: widget.detail)
-                  )
-                );
-              },
-            )
-          ],
-          centerTitle: true,
-        ),
-        body: new Container(
-          color: Colors.white,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: <Widget>[
-              new Container(
-                margin: new EdgeInsets.symmetric(horizontal: 20.0),
-                padding: new EdgeInsets.only(bottom: 50.0),
-                // width: MediaQuery.of(context).size.width - 40.0,
-                child: ListView(
-                  controller: _scrollController,
-                  children: talkWidgetList,
-                ),
-              ),
-              new Positioned(
-                bottom: 0,
-                left:0,
-                width: MediaQuery.of(context).size.width,
-                child: Container(
+    var talkContainer = Container(
                   color: Color(0xFFebebf3),
                   child: new Column(
                     children: <Widget>[
@@ -286,7 +297,7 @@ void  getImage() async {
                             new IconButton(
                               icon: Icon(Icons.insert_emoticon, color: Color(0xFF707072)),
                               onPressed: (){
-                                
+
                               },
                             ),
                             new IconButton(
@@ -456,7 +467,53 @@ void  getImage() async {
                       )
                     ],
                   )
+                );
+    return new WillPopScope(
+      onWillPop: (){
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (_) => false);
+      },
+      child:  new Scaffold(
+        appBar: new AppBar(
+          leading: new IconButton(
+            icon: Icon(Icons.keyboard_arrow_left),
+            onPressed: (){
+              Navigator.of(context).pushReplacementNamed('/home');
+            },
+          ),
+          title: new Text('${widget.detail['name']}', style: new TextStyle(fontSize: 20.0),),
+          actions: <Widget>[
+            new IconButton(
+              icon: Icon(Icons.person, size:30.0),
+              onPressed: (){
+                Navigator.of(context).push(
+                  new MaterialPageRoute(
+                    builder: (_) => new Detailed(detail: widget.detail)
+                  )
+                );
+              },
+            )
+          ],
+          centerTitle: true,
+        ),
+        body: new Container(
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            children: <Widget>[
+              new Container(
+                margin: new EdgeInsets.symmetric(horizontal: 20.0),
+                padding: new EdgeInsets.only(bottom: 50.0),
+                // width: MediaQuery.of(context).size.width - 40.0,
+                child: ListView(
+                  controller: _scrollController,
+                  children: talkWidgetList,
                 ),
+              ),
+              new Positioned(
+                bottom: 0,
+                left:0,
+                width: MediaQuery.of(context).size.width,
+                child: getEditRowWidget(context),
               )
             ],
           )
