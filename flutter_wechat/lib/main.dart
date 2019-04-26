@@ -25,7 +25,6 @@ class _MyWeChatState extends State<MyWeChat>{
   };
 
   @override
-
   Widget build(BuildContext context){
     return new MaterialApp(
       title: 'Flutter仿微信',

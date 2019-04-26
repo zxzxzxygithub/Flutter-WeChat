@@ -513,7 +513,7 @@ void  getImage() async {
                 bottom: 0,
                 left:0,
                 width: MediaQuery.of(context).size.width,
-                child: getEditRowWidget(context),
+                child: talkContainer,
               )
             ],
           )
